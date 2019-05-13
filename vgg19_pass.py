@@ -35,6 +35,8 @@ processed_files = 0
 # load and preprocess image
 path, dirs, files = next(os.walk(os.getcwd() + "/input/train"))
 for file in files:
+    if file == ".DS_Store":
+        continue   
     img_path = path + "/" + file
     img = image.load_img(img_path, target_size=(224, 224))
     x = image.img_to_array(img)

@@ -110,9 +110,10 @@ rms = sqrt(mean_squared_error(y_actual, y_predicted))
 print(rms)
 print(y_actual[:10])
 print(np.around(y_predicted[:10], decimals=1))
-
-data = pd.read_csv('data/real_hands.csv',  index_col=True)
 '''
+
+data = pd.read_csv('data/real-hands.csv',  index_col=False)
+
 
 
 X_rh = data.ix[:,V_START_COL:V_END_COL].as_matrix()

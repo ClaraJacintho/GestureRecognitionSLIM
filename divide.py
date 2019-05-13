@@ -28,7 +28,7 @@ if not os.path.exists(dest_train):
     os.makedirs(dest_train)
 
 for gesture in gestures:
-    path, dirs, files = next(os.walk(os.getcwd() + "/poses/" + gestures[gesture]))
+    path, dirs, files = next(os.walk(os.getcwd() + "/without_background_images/" + gestures[gesture]))
     
     file_count = len(files) 
     train =round(0.7 * file_count)
