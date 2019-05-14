@@ -56,7 +56,7 @@ for layer in model.layers[20:]:
 train_datagen = ImageDataGenerator(preprocessing_function=preprocess_input, validation_split=0.2)
 
 train_generator = train_datagen.flow_from_directory(
-    '.\\poses',
+    'poses',
     target_size=(128,128),
      color_mode='rgb',
      batch_size=32,
@@ -68,7 +68,7 @@ train_generator = train_datagen.flow_from_directory(
 
 
 validation_generator = train_datagen.flow_from_directory(
-    '.\\poses',
+    'poses',
     target_size=(128,128),
      color_mode='rgb',
      batch_size=32,
@@ -102,6 +102,7 @@ history = model.fit_generator(
 # In[ ]:
 
 
+
 # summarize history for accuracy
 plt.plot(history.history['acc'])
 plt.plot(history.history['val_acc'])
@@ -140,4 +141,7 @@ plt.ylabel('loss')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left')
 plt.show()
+
+model.save('VGG19_transfer.h5')
+
 
