@@ -151,7 +151,7 @@ feature_list = []
 for i in range(1, 1001):
         feature_list.append("f" + str(i))
 
-tendon_list = ["pose", "T1", "T2", "T3", "T4", "T5"]
+tendon_list = ["pose", "camera_angle", "T1", "T2", "T3", "T4", "T5"]
 
 # Adding the feature list to the other headers 
 tendon_list.extend(feature_list)
