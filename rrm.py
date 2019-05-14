@@ -96,48 +96,68 @@ print("test", X_test.shape, y_test.shape)
 print("all", X_all.shape, y_all.shape)
 
 
-model = Ridge(alpha=0.0001, copy_X=True, fit_intercept=True, max_iter=None, normalize=True, 
+model = Ridge(alpha=0.001, copy_X=True, fit_intercept=True, max_iter=None, normalize=True, 
               random_state=False, solver='auto', tol=0.01)
 model.fit(X, y)
 
 
 #----------------------------------------------------------------------------------------------------------------------------------
-'''
+
 y_actual = y_test
 y_predicted = model.predict(X_test) 
 
 rms = sqrt(mean_squared_error(y_actual, y_predicted))
-print(rms)
+print("Mean squared error is :", rms)
 print(y_actual[:10])
+
+print("Predicted tendons are :")
 print(np.around(y_predicted[:10], decimals=1))
 
-data = pd.read_csv('data/real_hands.csv',  index_col=True)
-'''
-
+data = pd.read_csv('data/real-hands.csv',  index_col=False)
 
 X_rh = data.ix[:,V_START_COL:V_END_COL].as_matrix()
-y_predicted_rh = model.predict(X_rh) 
-print(np.around(y_predicted_rh, decimals=3))
 
+# Getting the poses to add them in the csv
+poses_list = data.ix[:,'pose']
+poses_row = np.asarray([poses_list])
+poses = poses_row.transpose()
 
-#-------------------------------------------------------------------------------------------------------------------
-'''
-new_tendons = model.predict(X_all) 
-new_tendons.shape # this should match above
+# Getting the tendon values using the model from Boise
+y_predicted_rh = model.predict(X_rh)
+print("Predicted tendons") 
+print(np.around(y_predicted_rh, decimals=1))
 
-# new_tendons now needs to replace the columns from START_COL to END_COL
-data_old = pd.read_csv('../data/hand_data3_separated.csv',  index_col=False) +
+# Can be uncommented to check for dimensions in case
+# they do not seem to match
+"""
+print(X_rh.shape)
+print(type(X_rh))
 
-#modify the data
-data_new = data_old
-columns = ["T1", "T2", "T3", "T4", "T5"]
-for i, col in enumerate(columns):    
-    print(i, col)
-    data_new = data_new.drop([col], axis=1)
-    data_new.insert(loc=i+3, column=col, value=new_tendons[:,i],)
-    
-data_new
+print(y_predicted_rh.shape)
+print(type(y_predicted_rh))
 
-#write new tedoncs to csv file
-data_new.to_csv(path_or_buf='../data/hand_data3_mirror.csv', index=False)
-'''
+print(poses.shape)
+print(type(poses))
+"""
+
+# Adding poses to the tendon values
+partial_result = np.concatenate((poses, y_predicted_rh), axis = 1)
+
+# Adding the result to the features
+final2 = np.concatenate((partial_result, X_rh), axis = 1)
+
+# Creating the feature list to add as header
+feature_list = []
+for i in range(1, 1001):
+        feature_list.append("f" + str(i))
+
+tendon_list = ["pose", "camera_angle", "T1", "T2", "T3", "T4", "T5"]
+
+# Adding the feature list to the other headers 
+tendon_list.extend(feature_list)
+
+# Saving the results in a csv
+df = pd.DataFrame(final2)
+df.columns = tendon_list
+print(df)
+df.to_csv("data/real-hands-with-tendons.csv")

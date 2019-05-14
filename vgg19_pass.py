@@ -12,28 +12,15 @@ def create_df():
         df['f'+str(i)] = -1
     return df
 
-gestures = {
-    1: "fist",
-    2: "index",
-    3: "pinky",
-    4: "l",
-    5: "two",
-    6: "three",
-    7: "ronaldinho",
-    8: "metal",
-    9: "palm",
-    10: "jesus"
-}
-
 df = create_df()
 print(df['f999'])
 
-base_model = VGG19(weights='imagenet')
-model = base_model #Model(inputs=base_model.input, outputs=base_model.get_layer('fc2').output)
+model = VGG19(weights='imagenet')
+
 
 processed_files = 0
 # load and preprocess image
-path, dirs, files = next(os.walk(os.getcwd() + "/input/train"))
+path, dirs, files = next(os.walk(os.getcwd() + "/input/test"))
 for file in files:
     img_path = path + "/" + file
     img = image.load_img(img_path, target_size=(224, 224))
@@ -43,12 +30,15 @@ for file in files:
 
     pose = int(file[0])
 
-    # predict the class probabilities
+    # predict the class probabilities - extracting the visual features
     preds = model.predict(x)
     p = preds.flatten()
 
     data = np.insert(p, 0, pose) # I hate numpy!
+    data = np.insert(data, 1, 0) # I hate numpy!
     df.loc[len(df)] = data
+    df["camera_angle"] = "straight_on"
+
     print(processed_files)
     processed_files += 1
 
@@ -56,4 +46,4 @@ print(str(processed_files) + " processed files")
 print(df.shape)
 print(df)
 
-df.to_csv(os.getcwd() + "/data/real-hands.csv")
+df.to_csv(os.getcwd() + "/data/real-hands-test.csv")
