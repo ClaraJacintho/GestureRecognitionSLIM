@@ -122,23 +122,22 @@ print(np.around(y_predicted_rh, decimals=3))
 
 
 #-------------------------------------------------------------------------------------------------------------------
-'''
-new_tendons = model.predict(X_all) 
+
+new_tendons = y_predicted_rh #model.predict(X_all) 
 new_tendons.shape # this should match above
 
 # new_tendons now needs to replace the columns from START_COL to END_COL
-data_old = pd.read_csv('../data/hand_data3_separated.csv',  index_col=False) +
+data_old = data #pd.read_csv('../data/hand_data3_separated.csv',  index_col=False) +
 
 #modify the data
-data_new = data_old
+data_new = data
 columns = ["T1", "T2", "T3", "T4", "T5"]
 for i, col in enumerate(columns):    
     print(i, col)
     data_new = data_new.drop([col], axis=1)
     data_new.insert(loc=i+3, column=col, value=new_tendons[:,i],)
     
-data_new
+#data_new
 
 #write new tedoncs to csv file
-data_new.to_csv(path_or_buf='../data/hand_data3_mirror.csv', index=False)
-'''
+data_new.to_csv(path_or_buf='data/rgb_output.csv', index=False)

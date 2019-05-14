@@ -99,17 +99,20 @@ plt.imshow(img),plt.colorbar(),plt.show()
 
 
 #-------------
-#Without background
+#Without background and the background white in GrayScale
+
 import numpy as np
 import cv2
 import os
 from matplotlib import pyplot as plt
 
-path = '/Users/delton/Documents/Projet_Industriel/imageTreatment/hand_poses_train/'
-gestures_path = '/Users/delton/Documents/Projet_Industriel/imageTreatment/without_background_images/'
+path = 'hand_poses_train/'
+gestures_path = 'without_background_images/'
 
 gestures = os.listdir(path)[1:]
+
 pic_no = 0
+grayScale = True
 
 for i in gestures:
     images = os.listdir(path + i)
@@ -132,13 +135,23 @@ for i in gestures:
         cv2.grabCut(img, mask, rect, bgdModel, fgdModel, 5, cv2.GC_INIT_WITH_RECT)
 
         mask2 = np.where((mask==2)|(mask==0),0,1).astype('uint8')
-        img = img*mask2[:,:,np.newaxis]
+        img1 = img*mask2[:,:,np.newaxis]
 
+
+        #Get the background
+        background = img - img1
+
+        #Change all pixels in the background that are not black to white
+        background[np.where((background > [0,0,0]).all(axis = 2))] =[255,255,255]
+
+        #Add the background and the image
+        final = background + img1
+
+        
         pic_no += 1
-        save_img = np.array(img)
+        if grayScale:
+            final = cv2.cvtColor(final, cv2.COLOR_BGR2GRAY)
+        
+        save_img = np.array(final)
         cv2.imwrite(gestures_path + "/" + str(pic_no) + ".jpg", save_img)
 #----------
-
-
-
-
