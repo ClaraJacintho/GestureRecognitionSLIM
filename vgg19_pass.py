@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 
 def create_df():
-    df = pd.DataFrame(columns=["pose"])
+    df = pd.DataFrame(columns=["poseID", "camera_angle"])
     for i in range(1, 1001):
         df['f'+str(i)] = -1
     return df
