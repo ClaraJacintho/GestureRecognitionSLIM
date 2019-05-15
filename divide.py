@@ -2,7 +2,20 @@ import cv2
 import os
 import shutil
 
-gestures_path = 'imageTreatment/fake_hands_gScale/'
+gestures = {
+    0: "fist",
+    1: "index",
+    2: "pinky",
+    3: "l",
+    4: "two",
+    5: "three",
+    6: "ronaldinho",
+    7: "metal",
+    8: "palm",
+    9: "jesus"
+}
+
+gestures_path = 'fake_hands_gScale/'
 
 gestures = os.listdir(path)[1:]
 
@@ -32,22 +45,3 @@ for gesture in gestures:
         else:
             shutil.copy(src, dest_test + "/" + str(gesture) + "_"  + str(test-train)+ ".png")
         test += 1
-
-gestures_path = 'fake_hands_gScale/'
-
-gestures = os.listdir(path)[1:]
-
-pic_no = 0
-
-for i in gestures:
-    print(i)
-    if i == ".DS_Store":
-        continue
-    
-    
-    img = cv2.imread(path + i)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    pic_no += 1
-
-    save_img = np.array(gray)
-    cv2.imwrite(gestures_path + "/" + str(pic_no) + ".jpg", save_img)
