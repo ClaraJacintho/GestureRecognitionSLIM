@@ -36,7 +36,7 @@ def create_df():
     for i in range(2, 1001):
         df['f'+str(i)] = -1
     return df
-'''
+
 df = create_df()
 
 model = MobileNet()
@@ -69,7 +69,7 @@ df_col = pd.concat([dfh,df], axis=1)
 print(df_col)
 
 df_col.to_csv(os.getcwd() + "/data/fake-hands2.csv")
-''' 
+'
 
 data, words, vocab = read_raw_data()
 
