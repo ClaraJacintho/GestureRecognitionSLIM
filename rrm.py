@@ -20,6 +20,21 @@ from matplotlib import cm
 from mpl_toolkits.mplot3d import Axes3D
 import pickle
 import gesture_utils as gu
+import argparse
+
+
+parser = argparse.ArgumentParser(description='Train the necessary models')
+parser.add_argument(
+    '-v',
+    '--vgg19',
+    action='store_true',
+    help='Train the visual model with VGG19. Default trains with MobileNet')
+
+parser.add_argument(
+    '-g',
+    '--grayscale',
+    action='store_true',
+    help='Train with the images in grayscale. Default trains with RGB')
 
 train_data, test_data = gu.read_in_data()
 train_data[:10]

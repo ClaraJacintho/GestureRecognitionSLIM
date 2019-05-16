@@ -72,9 +72,9 @@ for file in files:
 
     if args.grayscale:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img = np.stack((img,)*3, axis=-1)
+        img = np.stack((img,)*3, axis=-1) #models expect images with 3 channels
     else:
-       img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+       img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) #conversion openCV -> PIL
 
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
@@ -114,7 +114,7 @@ if args.synthetic_hands:
 
     pickle_path = target_path[:-4] 
     print("Pickled files at " + pickle_path)
-    #To use mirror data, change these data to `...data_mirror`
+
     train_data.to_pickle(pickle_path + "-train.pkl")
     test_data.to_pickle(pickle_path + "-test.pkl" )
     heldout_data.to_pickle(pickle_path+ "-heldout.pkl" )
