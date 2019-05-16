@@ -106,17 +106,33 @@ import cv2
 import os
 from matplotlib import pyplot as plt
 
-path = 'hand_poses_train/'
+gestures_indexes = {
+    0: "fist",
+    1: "index",
+    2: "pinky",
+    3: "l",
+    4: "two",
+    5: "three",
+    6: "ronaldinho",
+    7: "metal",
+    8: "palm",
+    9: "jesus"
+}
+
+#numeroDogesto_id
+
+path = '../poses/'
 gestures_path = 'without_background_images/'
 
 gestures = os.listdir(path)[1:]
 
 pic_no = 0
-grayScale = True
+grayScale = False
 
 for i in gestures:
     images = os.listdir(path + i)
-    print(images)
+    folder_name = os.path.basename(path+i)
+    gesture_id = list(gestures_indexes.keys())[list(gestures_indexes.values()).index(folder_name)]
     for j in images:
         if j == ".DS_Store":
             continue
@@ -153,5 +169,5 @@ for i in gestures:
             final = cv2.cvtColor(final, cv2.COLOR_BGR2GRAY)
         
         save_img = np.array(final)
-        cv2.imwrite(gestures_path + "/" + str(pic_no) + ".jpg", save_img)
+        cv2.imwrite(gestures_path + "/" + str(gesture_id) + "_" + str(pic_no) + ".jpg", save_img)
 #----------
