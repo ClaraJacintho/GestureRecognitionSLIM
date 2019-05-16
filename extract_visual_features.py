@@ -39,22 +39,24 @@ if args.synthetic_hands:
     print("From synthetic hands")
 else:
     hand_path = os.getcwd() + "/input/all_hands"
-    print("From real hands")
-    target_path = os.getcwd() + "/data/real-hands" 
-
-if args.grayscale:
-    target_path = target_path + "-grayscale"
-    print("In grayscale")
+    target_path = os.getcwd() + "/data/real-hands"
+    print("From real hands") 
 
 if args.vgg19:
     model = VGG19(weights='imagenet')
-    target_path = target_path + "-vgg19.csv"
+    target_path = target_path + "-vgg19"
     print("Using VGG19")
 else:
     model = MobileNet()
-    target_path = target_path + "-mn.csv"
+    target_path = target_path + "-mn"
     print("Using MobileNet")
 
+if args.grayscale:
+    target_path = target_path + "-grayscale.csv"
+    print("In grayscale")
+else:
+    target_path = target_path + ".csv"
+    print("In RGB")
 
 
 df = gu.create_df(args.synthetic_hands)
@@ -72,9 +74,9 @@ for file in files:
 
     if args.grayscale:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img = np.stack((img,)*3, axis=-1) #models expect images with 3 channels
+        img = np.stack((img,)*3, axis=-1)
     else:
-       img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) #conversion openCV -> PIL
+       img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     x = image.img_to_array(img)
     x = np.expand_dims(x, axis=0)
@@ -114,7 +116,7 @@ if args.synthetic_hands:
 
     pickle_path = target_path[:-4] 
     print("Pickled files at " + pickle_path)
-
+    #To use mirror data, change these data to `...data_mirror`
     train_data.to_pickle(pickle_path + "-train.pkl")
     test_data.to_pickle(pickle_path + "-test.pkl" )
     heldout_data.to_pickle(pickle_path+ "-heldout.pkl" )

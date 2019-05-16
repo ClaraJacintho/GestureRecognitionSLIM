@@ -22,21 +22,35 @@ import pickle
 import gesture_utils as gu
 import argparse
 
-
 parser = argparse.ArgumentParser(description='Train the necessary models')
 parser.add_argument(
     '-v',
     '--vgg19',
     action='store_true',
     help='Train the visual model with VGG19. Default trains with MobileNet')
-
 parser.add_argument(
     '-g',
     '--grayscale',
     action='store_true',
     help='Train with the images in grayscale. Default trains with RGB')
 
-train_data, test_data = gu.read_in_data()
+args = parser.parse_args()
+
+if args.vgg19:
+       train_path = "data/synthetic-hand-vgg19"
+       test_path = "data/synthetic-hand-vgg19"
+else:
+        train_path ="data/synthetic-hand-mn"
+        test_path =  "data/synthetic-hand-mn"
+
+if args.grayscale:
+        train_path = train_path + "-grayscale-train.pkl" 
+        test_path = test_path + "-grayscale-test.pkl"
+else:
+        train_path = train_path + "-train.pkl" 
+        test_path = test_path + "-test.pkl"
+
+train_data, test_data = gu.read_in_data(train_path, test_path)
 train_data[:10]
 
 START_COL = 'T1' 
@@ -62,17 +76,32 @@ model.fit(X, y)
 
 #----------------------------------------------------------------------------------------------------------------------------------
 
+
 y_actual = y_test
 y_predicted = model.predict(X_test) 
 
 rms = sqrt(mean_squared_error(y_actual, y_predicted))
 print("Mean squared error is :", rms)
+print("Actual tendons:")
 print(y_actual[:10])
 
 print("Predicted tendons are :")
 print(np.around(y_predicted[:10], decimals=1))
 
-data = pd.read_csv('data/real-hands-vgg19.csv',  index_col=False)
+if args.vgg19:
+        hand_path = "data/real-hands-vgg19"
+else:
+        hand_path ="data/real-hands-mn"
+
+if args.grayscale:
+    hand_path = hand_path + "-grayscale.csv"
+else:
+    hand_path = hand_path + ".csv"
+
+
+
+
+data = pd.read_csv(hand_path,  index_col=False)
 
 X_rh = data.ix[:,V_START_COL:V_END_COL].as_matrix()
 pose_and_camera = data.ix[:,'poseID':'camera_angle'].as_matrix()
@@ -114,5 +143,6 @@ tendon_list.extend(feature_list)
 # Saving the results in a csv
 df = pd.DataFrame(final2)
 df.columns = tendon_list
-print(df)
-df.to_csv("data/real-hands-grayscale-vgg19-tendons.csv")
+
+hand_path = hand_path[:-3] + "-tendon.csv"
+df.to_csv(hand_path)
